@@ -87,9 +87,11 @@ Add the game hash to `config.json`:
 Once added, games with matching hashes will be skipped during parsing.
 
 #### Warmup Behavior
-- **The first map played is always a warmup map** - statistics are not recorded
-- **The game goes live when the map changes** - after the second map loads, statistics begin tracking
-- This allows players to warm up on the first map without affecting their permanent statistics
+- **The first map is always treated as warmup** - statistics are not recorded until a map change occurs
+- **Live tracking begins after the first map change** - once the second map loads, the game becomes active
+- **A game session ends when the scoreboard appears** - triggered by reaching the time limit or frag limit configured in server.cfg
+
+If multiple scoreboards appear on the same map, only the first one counts as a game end. The map must change to exit warmup mode and begin a new session.
 
 ## Advanced Usage
 
