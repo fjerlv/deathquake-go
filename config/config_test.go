@@ -8,9 +8,9 @@ import (
 func TestLoadFromFile(t *testing.T) {
 	// Test loading from a valid JSON file
 	testConfig := `{
-  "ignored_players": ["<world>", "TestBot"],
+  "ignored_players": ["TestBot"],
   "drinking_cider_players": ["Player1", "Player2"],
-  "skip_games": ["q3dm1", "q3dm2"]
+  "ignored_games": ["5d41402abc4b2a76b9719d911017c592", "7d793037a0760186574b0282f2f435e7"]
 }`
 
 	tmpFile, err := os.CreateTemp("", "config-*.json")
@@ -33,7 +33,8 @@ func TestLoadFromFile(t *testing.T) {
 		t.Errorf("Expected 2 ignored players, got %d", len(cfg.IgnoredPlayers))
 	}
 
-	if cfg.IgnoredPlayers[0] != "<world>" || cfg.IgnoredPlayers[1] != "TestBot" {
+	// <world> is automatically appended after the config is loaded
+	if cfg.IgnoredPlayers[0] != "TestBot" || cfg.IgnoredPlayers[1] != "<world>" {
 		t.Errorf("Ignored players not loaded correctly: %v", cfg.IgnoredPlayers)
 	}
 
@@ -41,12 +42,12 @@ func TestLoadFromFile(t *testing.T) {
 		t.Errorf("Expected 2 drinking cider players, got %d", len(cfg.DrinkingCiderPlayers))
 	}
 
-	if len(cfg.SkipGames) != 2 {
-		t.Errorf("Expected 2 skip games, got %d", len(cfg.SkipGames))
+	if len(cfg.IgnoredGames) != 2 {
+		t.Errorf("Expected 2 ignored games, got %d", len(cfg.IgnoredGames))
 	}
 
-	if cfg.SkipGames[0] != "q3dm1" || cfg.SkipGames[1] != "q3dm2" {
-		t.Errorf("Skip games not loaded correctly: %v", cfg.SkipGames)
+	if cfg.IgnoredGames[0] != "5d41402abc4b2a76b9719d911017c592" || cfg.IgnoredGames[1] != "7d793037a0760186574b0282f2f435e7" {
+		t.Errorf("Ignored games not loaded correctly: %v", cfg.IgnoredGames)
 	}
 }
 

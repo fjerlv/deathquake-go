@@ -254,7 +254,7 @@ func (g *Game) Save(logger *log.Logger) *Game {
 
 // IsSkipped returns true if the game's hash is in the skip list
 func (g *Game) IsSkipped() bool {
-	for _, gameId := range g.Config.SkipGames {
+	for _, gameId := range g.Config.IgnoredGames {
 		if g.CurentGameId == gameId {
 			return true
 		}

@@ -43,15 +43,15 @@ Edit `config.json` to customize behavior:
 
 ```json
 {
-  "ignoredPlayers": ["<world>"],
-  "drinkingCiderPlayers": ["PlayerName"],
-  "skip_games": []
+  "ignored_players": ["PlayerName"],
+  "drinking_cider_players": ["PlayerName"],
+  "ignored_games": []
 }
 ```
 
-- **ignoredPlayers**: Players to exclude from statistics
-- **drinkingCiderPlayers**: Players using special scoring mode
-- **skip_games**: Game hashes to skip (found in debug mode output)
+- **ignored_players**: Players to exclude from statistics (Note: `<world>` is always ignored automatically)
+- **drinking_cider_players**: Players using special scoring mode
+- **ignored_games**: Game hashes to skip (found in debug mode output)
 
 ### Skipping Games
 
@@ -77,7 +77,7 @@ Add the game hash to `config.json`:
 
 ```json
 {
-  "skip_games": [
+  "ignored_games": [
     "5d41402abc4b2a76b9719d911017c592",
     "7d793037a0760186574b0282f2f435e7"
   ]

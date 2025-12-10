@@ -16,8 +16,8 @@ type Config struct {
 	// special "drinking cider" attribute
 	DrinkingCiderPlayers []string `json:"drinking_cider_players"`
 
-	// SkipGames is a list of game identifiers to skip
-	SkipGames []string `json:"skip_games"`
+	// IgnoredGames is a list of game identifiers to skip
+	IgnoredGames []string `json:"ignored_games"`
 }
 
 // LoadFromFile loads configuration from a JSON file
@@ -31,6 +31,9 @@ func LoadFromFile(filepath string) (*Config, error) {
 	if err := json.Unmarshal(data, &cfg); err != nil {
 		return nil, fmt.Errorf("failed to parse config JSON: %w", err)
 	}
+
+	// Always append <world> to ignored players
+	cfg.IgnoredPlayers = append(cfg.IgnoredPlayers, "<world>")
 
 	return &cfg, nil
 }

@@ -507,7 +507,7 @@ func TestParseLine_SkipGames(t *testing.T) {
 	cfg := &config.Config{
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
-		SkipGames:            []string{}, // Will be set after getting hash
+		IgnoredGames:            []string{}, // Will be set after getting hash
 	}
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
@@ -526,7 +526,7 @@ func TestParseLine_SkipGames(t *testing.T) {
 	gameId := game.CurentGameId
 
 	// Update config with this id in skip list
-	cfg.SkipGames = []string{gameId}
+	cfg.IgnoredGames = []string{gameId}
 
 	// Process kill events (these should still be processed even for skipped games)
 	killLine := "2025-12-05 16:01:00 Kill: 3 2 10: PlayerOne killed PlayerTwo by MOD_RAILGUN"
@@ -553,7 +553,7 @@ func TestParseLine_SkipGames(t *testing.T) {
 	cfg2 := &config.Config{
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
-		SkipGames:            []string{"differenthash123"},
+		IgnoredGames:            []string{"differenthash123"},
 	}
 	game2 := &models.Game{
 		Players: make(map[string]*models.Player),
@@ -1032,7 +1032,7 @@ func TestParseLine_ReturnsErrorWhenAttackerNameContainsKilled(t *testing.T) {
 	cfg := &config.Config{
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
-		SkipGames:            []string{},
+		IgnoredGames:            []string{},
 	}
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
@@ -1082,7 +1082,7 @@ func TestTail_LogsErrorFromParseLine(t *testing.T) {
 	cfg := &config.Config{
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
-		SkipGames:            []string{},
+		IgnoredGames:            []string{},
 	}
 	game := models.NewGame(cfg)
 
