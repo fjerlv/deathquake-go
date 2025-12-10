@@ -93,6 +93,17 @@ Once added, games with matching hashes will be skipped during parsing.
 
 If multiple scoreboards appear on the same map, only the first one counts as a game end. The map must change to exit warmup mode and begin a new session.
 
+## Known Limitations
+
+### Player Names Containing "killed"
+
+If a player's name contains the string "killed", kill events involving that player will be ignored. This is due to the log file parsing logic, which searches for the "killed" keyword to identify kill events. Multiple occurrences of "killed" in a single line cause parsing ambiguity and the line will be skipped.
+
+**Example of problematic names:**
+- `Player killed`
+- `killed_by_noob`
+- `killedYou123`
+
 ## Advanced Usage
 
 ### Combining Log Files for Streaming

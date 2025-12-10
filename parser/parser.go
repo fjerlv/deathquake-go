@@ -58,7 +58,7 @@ func ParseLine(line string, game *models.Game, logger *log.Logger, receivingScor
 	if action == ActionKill {
 		logger.Printf("[%s] [KILL] %s", game.CurentGameId, line)
 		attackerName, victimName, weapon := parseKillEvent(messageSplit)
-		if err := validateActionKill(attackerName, victimName); err != nil {
+		if err := validateActionKill(line, attackerName, victimName); err != nil {
 			return err, receivingScores
 		}
 
@@ -90,13 +90,12 @@ func ParseLine(line string, game *models.Game, logger *log.Logger, receivingScor
 	return nil, receivingScores
 }
 
-func validateActionKill(attackerName string, victimName string) error {
+func validateActionKill(line string, attackerName string, victimName string) error {
+	if strings.Count(line, "killed") > 1 {
+		return fmt.Errorf("invalid kill event: line contains 'killed' multiple times: %q", line)
+	}
 	if attackerName == "" || victimName == "" {
 		return fmt.Errorf("invalid kill event: empty player names (attacker: %q, victim: %q)", attackerName, victimName)
-	}
-
-	if strings.Contains(attackerName, "killed") || strings.Contains(victimName, "killed") {
-		return fmt.Errorf("invalid kill event: player name contains 'killed' (attacker: %q, victim: %q)", attackerName, victimName)
 	}
 	return nil
 }

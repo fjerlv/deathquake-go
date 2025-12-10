@@ -1049,7 +1049,7 @@ func TestParseLine_ReturnsErrorWhenAttackerNameContainsKilled(t *testing.T) {
 		t.Error("Expected error when attacker name contains 'killed', got nil")
 	}
 
-	expectedErrMsg := "invalid kill event: player name contains 'killed'"
+	expectedErrMsg := "invalid kill event: line contains 'killed' multiple times"
 	if err != nil && !strings.Contains(err.Error(), expectedErrMsg) {
 		t.Errorf("Expected error message to contain %q, got %q", expectedErrMsg, err.Error())
 	}
@@ -1109,7 +1109,7 @@ func TestTail_LogsErrorFromParseLine(t *testing.T) {
 		t.Errorf("Expected logger to contain '[ERROR]', got: %q", logOutput)
 	}
 
-	expectedErrMsg := "invalid kill event: player name contains 'killed'"
+	expectedErrMsg := "invalid kill event: line contains 'killed' multiple times"
 	if !strings.Contains(logOutput, expectedErrMsg) {
 		t.Errorf("Expected logger to contain %q, got: %q", expectedErrMsg, logOutput)
 	}
