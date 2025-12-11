@@ -12,13 +12,15 @@ A real-time Quake 3 Arena game statistics monitor written in Go. Tracks player k
 
 ### 1. Start the Quake 3 Server
 
+**Important:** Before starting your event, edit `start_server.sh` and change the rcon password from the default `Hunter2` to a secure password.
+
 ```bash
 ./start_server.sh /path/to/ioquake3
 ```
 
 This will:
 - Copy `server.cfg` to the ioquake3 directory and execute it when the server starts
-- Set the rcon password for remote administration (see [ioquake3 rcon documentation](https://ioquake3.org/help/sys-admin-guide/#rcon) for executing commands from the game client)
+- Set the rcon password in `start_server.sh` for remote administration (see [ioquake3 rcon documentation](https://ioquake3.org/help/sys-admin-guide/#rcon) for executing commands from the game client)
 - Create a timestamped log file in the current directory: `game_YYYYMMDD_HHMMSS.log`
 
 ### 2. Run Deathquake Go
