@@ -16,7 +16,10 @@ A real-time Quake 3 Arena game statistics monitor written in Go. Tracks player k
 ./start_server.sh <ioquake3_directory>
 ```
 
-This will create a timestamped log file in the current directory: `game_YYYYMMDD_HHMMSS.log`
+This will:
+- Copy `server.cfg` to the ioquake3 directory and execute it when the server starts
+- Set the rcon password for remote administration (see [ioquake3 rcon documentation](https://ioquake3.org/help/sys-admin-guide/#rcon) for executing commands from the game client)
+- Create a timestamped log file in the current directory: `game_YYYYMMDD_HHMMSS.log`
 
 ### 2. Run DeathQuake Go
 
