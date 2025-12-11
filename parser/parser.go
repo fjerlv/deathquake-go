@@ -56,7 +56,7 @@ func ParseLine(line string, game *models.Game, logger *log.Logger, receivingScor
 
 	// Handle kill action
 	if action == ActionKill {
-		logger.Printf("[%s] [KILL] %s", game.CurentGameId, line)
+		logger.Printf("[%s] [KILL] %s", game.CurrentRoundId, line)
 		attackerName, victimName, weapon := parseKillEvent(messageSplit)
 		if err := validateActionKill(line, attackerName, victimName); err != nil {
 			return err, receivingScores

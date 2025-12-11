@@ -10,7 +10,7 @@ func TestLoadFromFile(t *testing.T) {
 	testConfig := `{
   "ignored_players": ["TestBot"],
   "drinking_cider_players": ["Player1", "Player2"],
-  "ignored_games": ["5d41402abc4b2a76b9719d911017c592", "7d793037a0760186574b0282f2f435e7"]
+  "ignored_rounds": ["5d41402abc4b2a76b9719d911017c592", "7d793037a0760186574b0282f2f435e7"]
 }`
 
 	tmpFile, err := os.CreateTemp("", "config-*.json")
@@ -42,12 +42,12 @@ func TestLoadFromFile(t *testing.T) {
 		t.Errorf("Expected 2 drinking cider players, got %d", len(cfg.DrinkingCiderPlayers))
 	}
 
-	if len(cfg.IgnoredGames) != 2 {
-		t.Errorf("Expected 2 ignored games, got %d", len(cfg.IgnoredGames))
+	if len(cfg.IgnoredRounds) != 2 {
+		t.Errorf("Expected 2 ignored rounds, got %d", len(cfg.IgnoredRounds))
 	}
 
-	if cfg.IgnoredGames[0] != "5d41402abc4b2a76b9719d911017c592" || cfg.IgnoredGames[1] != "7d793037a0760186574b0282f2f435e7" {
-		t.Errorf("Ignored games not loaded correctly: %v", cfg.IgnoredGames)
+	if cfg.IgnoredRounds[0] != "5d41402abc4b2a76b9719d911017c592" || cfg.IgnoredRounds[1] != "7d793037a0760186574b0282f2f435e7" {
+		t.Errorf("Ignored rounds not loaded correctly: %v", cfg.IgnoredRounds)
 	}
 }
 

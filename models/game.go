@@ -18,7 +18,7 @@ type Game struct {
 	Config *config.Config
 
 	// Game state
-	CurentGameId   string // Will only be assigned for the next map
+	CurrentRoundId string // Will only be assigned for the next map
 	IsWarmup       bool
 	CurrentMapName string
 	MapChanges     int
@@ -137,7 +137,7 @@ func (g *Game) NewMap(newMapName string, timestamp string) *Game {
 		g.MapChanges++
 
 		hash := md5.Sum([]byte(timestamp))
-		g.CurentGameId = hex.EncodeToString(hash[:])
+		g.CurrentRoundId = hex.EncodeToString(hash[:])
 
 		// After first map change, warmup is over
 		if g.MapChanges > 1 {
@@ -193,7 +193,7 @@ func (g *Game) Save(logger *log.Logger) *Game {
 		p.SaveRound(fragLimit)
 	}
 
-	logger.Printf("[%s] [GAME] map=%s fraglimit=%d", g.CurentGameId, g.CurrentMapName, fragLimit)
+	logger.Printf("[%s] [GAME] map=%s fraglimit=%d", g.CurrentRoundId, g.CurrentMapName, fragLimit)
 
 	playerSlice := make([]*Player, 0, len(g.Players))
 	for _, p := range g.Players {
@@ -254,8 +254,8 @@ func (g *Game) Save(logger *log.Logger) *Game {
 
 // IsSkipped returns true if the game's hash is in the skip list
 func (g *Game) IsSkipped() bool {
-	for _, gameId := range g.Config.IgnoredGames {
-		if g.CurentGameId == gameId {
+	for _, gameId := range g.Config.IgnoredRounds {
+		if g.CurrentRoundId == gameId {
 			return true
 		}
 	}
@@ -264,5 +264,5 @@ func (g *Game) IsSkipped() bool {
 
 // Print returns a formatted string with game information for logging
 func (g *Game) Print() string {
-	return fmt.Sprintf("%s", g.CurentGameId)
+	return fmt.Sprintf("%s", g.CurrentRoundId)
 }

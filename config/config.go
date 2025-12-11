@@ -16,8 +16,8 @@ type Config struct {
 	// special "drinking cider" attribute
 	DrinkingCiderPlayers []string `json:"drinking_cider_players"`
 
-	// IgnoredGames is a list of game identifiers to skip
-	IgnoredGames []string `json:"ignored_games"`
+	// IgnoredRounds is a list of round identifiers to skip
+	IgnoredRounds []string `json:"ignored_rounds"`
 }
 
 // LoadFromFile loads configuration from a JSON file

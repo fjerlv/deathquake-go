@@ -43,8 +43,8 @@ func TestNewGame(t *testing.T) {
 	if game.MapChanges != 0 {
 		t.Errorf("Expected MapChanges to be 0, got %d", game.MapChanges)
 	}
-	if game.CurentGameId != "" {
-		t.Errorf("Expected CurentGameId to be empty, got %s", game.CurentGameId)
+	if game.CurrentRoundId != "" {
+		t.Errorf("Expected CurrentRoundId to be empty, got %s", game.CurrentRoundId)
 	}
 }
 
