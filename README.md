@@ -100,7 +100,7 @@ Add the round hash to `config.json`:
 }
 ```
 
-Once added, rounds with matching hashes will be ignored during parsing.
+Once added, rounds with matching hashes will be ignored during parsing. **Note:** You must restart deathquake-go for config changes to take effect.
 
 #### Warmup Behavior
 - **The first map is always treated as warmup** - statistics are not recorded until a map change occurs
