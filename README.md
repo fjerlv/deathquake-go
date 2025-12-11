@@ -66,10 +66,10 @@ You can configure DeathQuake Go to ignore specific round sessions by their hash.
 
 2. The round hash appears in all log lines after a map change:
    ```
-   [5d41402abc4b2a76b9719d911017c592] [MAP] Round ID generated
+   [5d41402abc4b2a76b9719d911017c592] [MAP] Round ID generated: 5d41402abc4b2a76b9719d911017c592
    [5d41402abc4b2a76b9719d911017c592] [KILL] PlayerOne killed PlayerTwo with MOD_RAILGUN
    [5d41402abc4b2a76b9719d911017c592] [SAVE] Saving round results
-   [5d41402abc4b2a76b9719d911017c592] [GAME] map=q3dm17 fraglimit=20
+   [5d41402abc4b2a76b9719d911017c592] [SAVE] Frag limit for this round: 20
    ```
 
 3. Copy the hash from the square brackets at the beginning of any line
