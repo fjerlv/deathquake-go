@@ -13,7 +13,7 @@ A real-time Quake 3 Arena game statistics monitor written in Go. Tracks player k
 ### 1. Start the Quake 3 Server
 
 ```bash
-./start_server.sh <ioquake3_directory>
+./start_server.sh /path/to/ioquake3
 ```
 
 This will:
