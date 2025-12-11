@@ -1,4 +1,4 @@
-# DeathQuake Go
+# Deathquake Go
 
 A real-time Quake 3 Arena game statistics monitor written in Go. Tracks player kills, deaths, rankings, and scores during live gameplay.
 
@@ -21,7 +21,7 @@ This will:
 - Set the rcon password for remote administration (see [ioquake3 rcon documentation](https://ioquake3.org/help/sys-admin-guide/#rcon) for executing commands from the game client)
 - Create a timestamped log file in the current directory: `game_YYYYMMDD_HHMMSS.log`
 
-### 2. Run DeathQuake Go
+### 2. Run Deathquake Go
 
 ```bash
 go run main.go -f <game_YYYYMMDD_HHMMSS.log>
@@ -39,6 +39,14 @@ View detailed logging output:
 ```bash
 ./deathquake -f game.log --debug
 ```
+
+## Game Rules
+
+For an example of how to structure game rules for Deathquake events, see [SAMPLE_RULES.md](SAMPLE_RULES.md). This document contains sample scoring and drinking game rules that can be adapted for your own events.
+
+## Event Winners
+
+See [WINNERS.md](WINNERS.md) for a list of past winners from Deathquake events held at the Department of Computer Science, Aarhus University.
 
 ## Configuration
 
@@ -58,7 +66,7 @@ Edit `config.json` to customize behavior:
 
 ### Ignoring Rounds
 
-You can configure DeathQuake Go to ignore specific round sessions by their hash.
+You can configure Deathquake Go to ignore specific round sessions by their hash.
 
 #### Finding Round Hashes
 

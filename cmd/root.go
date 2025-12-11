@@ -20,7 +20,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "deathquake-go",
 	Short: "Real-time Quake 3 Arena game statistics tracker",
-	Long: `DeathQuake-Go monitors Quake 3 Arena game logs and displays
+	Long: `Deathquake-Go monitors Quake 3 Arena game logs and displays
 live player statistics, rankings, and match information in your terminal.
 
 The tool tracks kills, deaths, weapon usage, killing streaks, and more,
