@@ -51,7 +51,7 @@ Edit `config.json` to customize behavior:
 
 - **ignored_players**: Players to exclude from statistics (Note: `<world>` is always ignored automatically)
 - **drinking_cider_players**: Players using special scoring mode
-- **ignored_rounds**: Round hashes to skip (found in debug mode output)
+- **ignored_rounds**: Round hashes to ignore (found in debug mode output)
 
 ### Ignoring Rounds
 
@@ -64,14 +64,17 @@ You can configure DeathQuake Go to ignore specific round sessions by their hash.
    ./deathquake -f game.log --debug
    ```
 
-2. When a round ends (score is posted), the round hash will be logged:
+2. The round hash appears in all log lines after a map change:
    ```
+   [5d41402abc4b2a76b9719d911017c592] [MAP] Round ID generated
+   [5d41402abc4b2a76b9719d911017c592] [KILL] PlayerOne killed PlayerTwo with MOD_RAILGUN
+   [5d41402abc4b2a76b9719d911017c592] [SAVE] Saving round results
    [5d41402abc4b2a76b9719d911017c592] [GAME] map=q3dm17 fraglimit=20
    ```
 
-3. Copy the hash from the square brackets at the beginning of the line
+3. Copy the hash from the square brackets at the beginning of any line
 
-#### Adding Hashes to Skip List
+#### Adding Hashes to Ignore Rounds
 
 Add the round hash to `config.json`:
 
@@ -84,7 +87,7 @@ Add the round hash to `config.json`:
 }
 ```
 
-Once added, rounds with matching hashes will be skipped during parsing.
+Once added, rounds with matching hashes will be ignored during parsing.
 
 #### Warmup Behavior
 - **The first map is always treated as warmup** - statistics are not recorded until a map change occurs
