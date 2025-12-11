@@ -17,6 +17,9 @@ type Game struct {
 	// Configuration
 	Config *config.Config
 
+	// Logger
+	Logger *log.Logger
+
 	// Game state
 	CurrentRoundId string // Will only be assigned for the next map
 	IsWarmup       bool
@@ -37,10 +40,12 @@ type Game struct {
 // Constructor
 
 // NewGame creates and initializes a new Game instance
-func NewGame(cfg *config.Config) *Game {
+func NewGame(cfg *config.Config, logger *log.Logger) *Game {
+	logger.Printf("[GAME] Initializing new game")
 	return &Game{
 		Players:  make(map[string]*Player),
 		Config:   cfg,
+		Logger:   logger,
 		IsWarmup: true,
 	}
 }
@@ -53,6 +58,8 @@ func (g *Game) GetOrCreatePlayer(playerName string) *Player {
 		return player
 	}
 
+	g.Logger.Printf("[%s] [PLAYER] Creating new player: %s", g.CurrentRoundId, playerName)
+
 	newPlayer := &Player{
 		Name: playerName,
 	}
@@ -60,6 +67,7 @@ func (g *Game) GetOrCreatePlayer(playerName string) *Player {
 	for _, c := range g.Config.IgnoredPlayers {
 		if newPlayer.Name == c {
 			newPlayer.SetIsIgnored(true)
+			g.Logger.Printf("[%s] [PLAYER] Player %s marked as ignored", g.CurrentRoundId, playerName)
 			break
 		}
 	}
@@ -67,6 +75,7 @@ func (g *Game) GetOrCreatePlayer(playerName string) *Player {
 	for _, c := range g.Config.DrinkingCiderPlayers {
 		if newPlayer.Name == c {
 			newPlayer.SetDrinkingCider(true)
+			g.Logger.Printf("[%s] [PLAYER] Player %s marked as drinking cider", g.CurrentRoundId, playerName)
 			break
 		}
 	}
@@ -133,19 +142,25 @@ func (g *Game) GetFragLimit() int {
 // NewMap updates the map and handles warmup state transitions
 func (g *Game) NewMap(newMapName string, timestamp string) *Game {
 	if newMapName != g.CurrentMapName {
+		g.Logger.Printf("[%s] [MAP] Changing map from '%s' to '%s'", g.CurrentRoundId, g.CurrentMapName, newMapName)
 		g.CurrentMapName = newMapName
 		g.MapChanges++
 
 		hash := md5.Sum([]byte(timestamp))
 		g.CurrentRoundId = hex.EncodeToString(hash[:])
+		g.Logger.Printf("[%s] [MAP] Round ID generated: %s", g.CurrentRoundId, g.CurrentRoundId)
 
 		// After first map change, warmup is over
 		if g.MapChanges > 1 {
 			g.IsWarmup = false
+			g.Logger.Printf("[%s] [MAP] Warmup ended, game is now active", g.CurrentRoundId)
+		} else {
+			g.Logger.Printf("[%s] [MAP] First map change, still in warmup", g.CurrentRoundId)
 		}
 	}
 
 	// Discard round variables for all players
+	g.Logger.Printf("[%s] [MAP] Discarding round stats for %d players", g.CurrentRoundId, len(g.Players))
 	for _, p := range g.Players {
 		p.DiscardRound()
 	}
@@ -157,6 +172,7 @@ func (g *Game) NewMap(newMapName string, timestamp string) *Game {
 // Handles world kills, suicides, and normal kills with weapon tracking
 func (g *Game) RecordKill(attackerName, victimName, weapon string) *Game {
 	if g.IsWarmup {
+		g.Logger.Printf("[%s] [KILL] Ignoring kill during warmup: %s killed %s", g.CurrentRoundId, attackerName, victimName)
 		return g
 	}
 
@@ -165,11 +181,17 @@ func (g *Game) RecordKill(attackerName, victimName, weapon string) *Game {
 
 	if attacker.Name == "<world>" || attacker.Name == victim.Name {
 		// World kills and suicides both penalize the victim/player
+		if attacker.Name == "<world>" {
+			g.Logger.Printf("[%s] [KILL] World kill: %s died to environment", g.CurrentRoundId, victimName)
+		} else {
+			g.Logger.Printf("[%s] [KILL] Suicide: %s killed themselves", g.CurrentRoundId, victimName)
+		}
 		victim.SubtractKills()
 		victim.IncrementDeaths()
 		victim.IncrementSuicideDeaths()
 	} else {
 		// Normal kill
+		g.Logger.Printf("[%s] [KILL] %s killed %s with %s", g.CurrentRoundId, attackerName, victimName, weapon)
 		attacker.IncrementKills()
 		victim.IncrementDeaths()
 
@@ -187,13 +209,15 @@ func (g *Game) RecordKill(attackerName, victimName, weapon string) *Game {
 }
 
 // Save saves the current round for all players
-func (g *Game) Save(logger *log.Logger) *Game {
+func (g *Game) Save() *Game {
+	g.Logger.Printf("[%s] [SAVE] Saving round results", g.CurrentRoundId)
+
 	fragLimit := g.GetFragLimit()
+	g.Logger.Printf("[%s] [SAVE] Frag limit for this round: %d", g.CurrentRoundId, fragLimit)
+
 	for _, p := range g.Players {
 		p.SaveRound(fragLimit)
 	}
-
-	logger.Printf("[%s] [GAME] map=%s fraglimit=%d", g.CurrentRoundId, g.CurrentMapName, fragLimit)
 
 	playerSlice := make([]*Player, 0, len(g.Players))
 	for _, p := range g.Players {
@@ -225,11 +249,15 @@ func (g *Game) Save(logger *log.Logger) *Game {
 	})
 
 	// Assign sequential ranks (1, 2, 3, ...)
+	g.Logger.Printf("[%s] [SAVE] Assigning ranks to %d players", g.CurrentRoundId, len(playerSlice))
 	for i, player := range playerSlice {
 		player.SetRank(i + 1)
+		g.Logger.Printf("[%s] [RANK] #%d: %s (score: %.2f, kills: %d)",
+			g.CurrentRoundId, i+1, player.Name, player.Score, player.Kills)
 	}
 
 	// Update the max values for the whole game
+	g.Logger.Printf("[%s] [SAVE] Updating maximum statistics", g.CurrentRoundId)
 	g.MaxKillDeathRatio = 0
 	g.MaxKills = 0
 	for _, p := range g.Players {
@@ -247,6 +275,7 @@ func (g *Game) Save(logger *log.Logger) *Game {
 	}
 
 	g.IsWarmup = true
+	g.Logger.Printf("[%s] [SAVE] Round saved, entering warmup mode", g.CurrentRoundId)
 	return g
 }
 
@@ -256,6 +285,7 @@ func (g *Game) Save(logger *log.Logger) *Game {
 func (g *Game) IsSkipped() bool {
 	for _, gameId := range g.Config.IgnoredRounds {
 		if g.CurrentRoundId == gameId {
+			g.Logger.Printf("[%s] [SKIP] Round is in ignored list, skipping", g.CurrentRoundId)
 			return true
 		}
 	}

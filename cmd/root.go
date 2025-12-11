@@ -45,8 +45,6 @@ with a fun beer/cider scoring system for match performance.`,
 			log.Fatal(err)
 		}
 
-		game := models.NewGame(cfg)
-
 		// Create logger based on debug mode
 		var logger *log.Logger
 		if debug {
@@ -54,6 +52,8 @@ with a fun beer/cider scoring system for match performance.`,
 		} else {
 			logger = log.New(io.Discard, "", 0)
 		}
+
+		game := models.NewGame(cfg, logger)
 
 		if debug {
 			// Debug mode: run without UI

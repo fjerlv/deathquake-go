@@ -18,11 +18,14 @@ const (
 )
 
 func Tail(fileName string, teaProgram *tea.Program, game *models.Game, logger *log.Logger) error {
+	logger.Printf("[TAIL] Starting to tail file: %s", fileName)
 	t, err := tail.TailFile(fileName, tail.Config{Follow: true})
 	if err != nil {
+		logger.Printf("[TAIL] Failed to open file: %v", err)
 		return err
 	}
 
+	logger.Printf("[TAIL] Successfully opened file, waiting for lines...")
 	receivingScores := false
 	for line := range t.Lines {
 		if err, receivingScores = ParseLine(line.Text, game, logger, receivingScores); err != nil {
@@ -39,6 +42,7 @@ func Tail(fileName string, teaProgram *tea.Program, game *models.Game, logger *l
 			)
 		}
 	}
+	logger.Printf("[TAIL] File tail ended")
 	return nil
 }
 
@@ -48,6 +52,7 @@ func ParseLine(line string, game *models.Game, logger *log.Logger, receivingScor
 
 	// Validate line format - need at least 3 parts
 	if len(messageSplit) < 3 {
+		logger.Printf("[%s] [PARSE] Invalid line format (too few parts): %q", game.CurrentRoundId, line)
 		return fmt.Errorf("invalid log line format: expected at least 3 parts, got %d: %q", len(messageSplit), line), receivingScores
 	}
 
@@ -56,9 +61,9 @@ func ParseLine(line string, game *models.Game, logger *log.Logger, receivingScor
 
 	// Handle kill action
 	if action == ActionKill {
-		logger.Printf("[%s] [KILL] %s", game.CurrentRoundId, line)
 		attackerName, victimName, weapon := parseKillEvent(messageSplit)
 		if err := validateActionKill(line, attackerName, victimName); err != nil {
+			logger.Printf("[%s] [PARSE] Kill validation failed: %v", game.CurrentRoundId, err)
 			return err, receivingScores
 		}
 
@@ -67,22 +72,34 @@ func ParseLine(line string, game *models.Game, logger *log.Logger, receivingScor
 		// Handle server/map change
 		if len(messageSplit) >= 4 {
 			newMapName := messageSplit[3]
+			logger.Printf("[%s] [PARSE] Server map change to: %s", game.CurrentRoundId, newMapName)
 			game.NewMap(newMapName, timestamp)
+		} else {
+			logger.Printf("[%s] [PARSE] Server action with insufficient data: %q", game.CurrentRoundId, line)
 		}
 	}
 
 	// Update score state (handles both receiving and ending scores)
 	if action == ActionScore {
+		logger.Printf("[%s] [PARSE] Score action detected (receivingScores: %v, warmup: %v)", game.CurrentRoundId, receivingScores, game.IsWarmup)
 		// First time receiving score line - save the round
 		if !receivingScores && !game.IsWarmup {
 			receivingScores = true
 			if !game.IsSkipped() {
-				game.Save(logger)
+				logger.Printf("[%s] [PARSE] Saving round (not skipped)", game.CurrentRoundId)
+				game.Save()
+			} else {
+				logger.Printf("[%s] [PARSE] Skipping round save (round is in ignored list)", game.CurrentRoundId)
 			}
+		} else if receivingScores {
+			logger.Printf("[%s] [PARSE] Already receiving scores, continuing...", game.CurrentRoundId)
+		} else if game.IsWarmup {
+			logger.Printf("[%s] [PARSE] Score during warmup, not saving", game.CurrentRoundId)
 		}
 	} else {
 		// If we were receiving scores and now got a different action, scores have ended
 		if receivingScores {
+			logger.Printf("[%s] [PARSE] Scores ended, returning to normal parsing", game.CurrentRoundId)
 			receivingScores = false
 		}
 	}
@@ -91,8 +108,9 @@ func ParseLine(line string, game *models.Game, logger *log.Logger, receivingScor
 }
 
 func validateActionKill(line string, attackerName string, victimName string) error {
-	if strings.Count(line, "killed") > 1 {
-		return fmt.Errorf("invalid kill event: line contains 'killed' multiple times: %q", line)
+	killedCount := strings.Count(line, "killed")
+	if killedCount > 1 {
+		return fmt.Errorf("invalid kill event: line contains 'killed' %d times: %q", killedCount, line)
 	}
 	if attackerName == "" || victimName == "" {
 		return fmt.Errorf("invalid kill event: empty player names (attacker: %q, victim: %q)", attackerName, victimName)

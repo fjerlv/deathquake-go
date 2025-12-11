@@ -20,11 +20,12 @@ func TestParseLine_KillCreatesPlayers(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	// Sample kill log line format with proper timestamp:
 	// YYYY-MM-DD HH:MM:SS Kill: id1 id2 weaponId: AttackerName killed VictimName by WEAPON
@@ -71,12 +72,13 @@ func TestParseLine_KillsDuringWarmupNotRegistered(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players:  make(map[string]*models.Player),
 		Config:   cfg,
+		Logger:   logger,
 		IsWarmup: true, // Game is in warmup mode
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	// Process a kill line during warmup
 	killLine := "2025-12-05 14:23:45 Kill: 3 2 10: PlayerOne killed PlayerTwo by MOD_RAILGUN"
@@ -112,11 +114,12 @@ func TestParseLine_WorldKill(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	// <world> kill means environmental death (fall, lava, etc.)
 	killLine := "2025-12-05 14:24:50 Kill: 1022 3 22: <world> killed PlayerOne by MOD_FALLING"
@@ -151,11 +154,12 @@ func TestParseLine_Suicide(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	// Player kills themselves
 	killLine := "2025-12-05 14:25:30 Kill: 2 2 19: PlayerOne killed PlayerOne by MOD_ROCKET_SPLASH"
@@ -189,11 +193,12 @@ func TestParseLine_PlasmaWeapon(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	killLine := "2025-12-05 14:30:22 Kill: 4 3 9: Triple-H killed Rysgaard by MOD_PLASMA_SPLASH"
 
@@ -228,11 +233,12 @@ func TestParseLine_RocketWeapon(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	killLine := "2025-12-05 15:10:45 Kill: 2 5 7: PlayerOne killed PlayerTwo by MOD_ROCKET"
 
@@ -258,11 +264,12 @@ func TestParseLine_RocketSplashWeapon(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	killLine := "2025-12-05 15:12:30 Kill: 3 4 8: PlayerA killed PlayerB by MOD_ROCKET_SPLASH"
 
@@ -284,11 +291,12 @@ func TestParseLine_GauntletWeapon(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	killLine := "2025-12-05 15:20:10 Kill: 1 2 2: Warrior killed Victim by MOD_GAUNTLET"
 
@@ -310,11 +318,12 @@ func TestParseLine_MapChange(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	// Create a player with some stats
 	player := &models.Player{Name: "TestPlayer"}
@@ -342,11 +351,12 @@ func TestParseLine_MultipleMapChanges(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	maps := []string{
 		"2025-12-05 16:00:00 Server: q3dm1",
@@ -378,11 +388,12 @@ func TestParseLine_ScoreAction(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	// Create players with stats
 	player1 := &models.Player{Name: "Player1"}
@@ -422,11 +433,12 @@ func TestParseLine_InvalidLine(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	// Line with less than 3 parts should be ignored
 	invalidLine := "2025-12-05"
@@ -444,11 +456,12 @@ func TestParseLine_MultiWordPlayerNames(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	killLine := "2025-12-05 14:30:22 Kill: 4 3 9: Triple-H killed Rysgaard by MOD_PLASMA"
 
@@ -471,11 +484,12 @@ func TestParseLine_PlayerNameContainsKilled(t *testing.T) {
 		IgnoredPlayers:       []string{},
 		DrinkingCiderPlayers: []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	// Player name contains "killed" - should be ignored
 	killLine := "2025-12-05 14:30:22 Kill: 4 3 9: killedPlayer killed Victim by MOD_PLASMA"
@@ -512,6 +526,7 @@ func TestParseLine_SkipGames(t *testing.T) {
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
 
 	// First map change to initialize
@@ -558,6 +573,7 @@ func TestParseLine_SkipGames(t *testing.T) {
 	game2 := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg2,
+		Logger:  logger,
 	}
 
 	// First map change
@@ -741,7 +757,8 @@ func TestSetRanks(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			game := &models.Game{Players: tt.players}
+			logger := log.New(io.Discard, "", 0)
+			game := &models.Game{Players: tt.players, Logger: logger}
 			playerSlice := make([]*models.Player, 0, len(game.Players))
 			for _, p := range game.Players {
 				playerSlice = append(playerSlice, p)
@@ -840,7 +857,8 @@ func TestGetSortedPlayers(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			game := &models.Game{Players: tt.players}
+			logger := log.New(io.Discard, "", 0)
+			game := &models.Game{Players: tt.players, Logger: logger}
 			result := game.GetSortedPlayers()
 
 			if len(result) != len(tt.expectedOrder) {
@@ -895,7 +913,8 @@ func TestGetFragLimit(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			game := &models.Game{Players: tt.players}
+			logger := log.New(io.Discard, "", 0)
+			game := &models.Game{Players: tt.players, Logger: logger}
 			result := game.GetFragLimit()
 			if result != tt.expected {
 				t.Errorf("Expected frag limit %d, got %d", tt.expected, result)
@@ -1034,11 +1053,12 @@ func TestParseLine_ReturnsErrorWhenAttackerNameContainsKilled(t *testing.T) {
 		DrinkingCiderPlayers: []string{},
 		IgnoredRounds:           []string{},
 	}
+	logger := log.New(io.Discard, "", 0)
 	game := &models.Game{
 		Players: make(map[string]*models.Player),
 		Config:  cfg,
+		Logger:  logger,
 	}
-	logger := log.New(io.Discard, "", 0)
 
 	// Player name contains "killed" - should return error
 	killLine := "2025-12-05 14:30:22 Kill: 4 3 9: killedPlayer killed Victim by MOD_PLASMA"
@@ -1049,7 +1069,7 @@ func TestParseLine_ReturnsErrorWhenAttackerNameContainsKilled(t *testing.T) {
 		t.Error("Expected error when attacker name contains 'killed', got nil")
 	}
 
-	expectedErrMsg := "invalid kill event: line contains 'killed' multiple times"
+	expectedErrMsg := "invalid kill event: line contains 'killed' 2 times"
 	if err != nil && !strings.Contains(err.Error(), expectedErrMsg) {
 		t.Errorf("Expected error message to contain %q, got %q", expectedErrMsg, err.Error())
 	}
@@ -1084,7 +1104,7 @@ func TestTail_LogsErrorFromParseLine(t *testing.T) {
 		DrinkingCiderPlayers: []string{},
 		IgnoredRounds:           []string{},
 	}
-	game := models.NewGame(cfg)
+	game := models.NewGame(cfg, logger)
 
 	// Use a channel to signal when we're done reading
 	done := make(chan bool)
@@ -1109,7 +1129,7 @@ func TestTail_LogsErrorFromParseLine(t *testing.T) {
 		t.Errorf("Expected logger to contain '[ERROR]', got: %q", logOutput)
 	}
 
-	expectedErrMsg := "invalid kill event: line contains 'killed' multiple times"
+	expectedErrMsg := "invalid kill event: line contains 'killed' 2 times"
 	if !strings.Contains(logOutput, expectedErrMsg) {
 		t.Errorf("Expected logger to contain %q, got: %q", expectedErrMsg, logOutput)
 	}

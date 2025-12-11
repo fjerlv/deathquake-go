@@ -1,6 +1,8 @@
 package models
 
 import (
+	"io"
+	"log"
 	"testing"
 
 	"github.com/fjerlv/deathquake-go/config"
@@ -11,7 +13,8 @@ func TestNewGame(t *testing.T) {
 		IgnoredPlayers:       []string{"<world>"},
 		DrinkingCiderPlayers: []string{"TestPlayer"},
 	}
-	game := NewGame(cfg)
+	logger := log.New(io.Discard, "", 0)
+	game := NewGame(cfg, logger)
 
 	// Verify Players map is initialized
 	if game.Players == nil {
@@ -103,10 +106,12 @@ func TestChangeMap(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			logger := log.New(io.Discard, "", 0)
 			game := &Game{
 				CurrentMapName: tt.initialMap,
 				MapChanges:     tt.initialMapChanges,
 				IsWarmup:       tt.initialIsWarmup,
+				Logger:         logger,
 			}
 
 			game.NewMap(tt.newMap, "2024-12-07 14:30:00")
@@ -125,7 +130,8 @@ func TestChangeMap(t *testing.T) {
 }
 
 func TestSetIsWarmup(t *testing.T) {
-	game := &Game{IsWarmup: false}
+	logger := log.New(io.Discard, "", 0)
+	game := &Game{IsWarmup: false, Logger: logger}
 
 	game.IsWarmup = true
 	if !game.IsWarmup {
